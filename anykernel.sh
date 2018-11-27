@@ -3,8 +3,8 @@
 
 ## AnyKernel setup
 # begin properties
-properties() {
-kernel.string=DirtyV by bsmitty83 @ xda-developers
+properties() { '
+kernel.string=ExampleKernel by osm0sis @ xda-developers
 do.devicecheck=1
 do.modules=0
 do.cleanup=1
@@ -14,7 +14,7 @@ device.name2=toro
 device.name3=toroplus
 device.name4=
 device.name5=
-} # end properties
+'; } # end properties
 
 # shell variables
 block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;
@@ -30,6 +30,7 @@ ramdisk_compression=auto;
 ## AnyKernel file attributes
 # set permissions/ownership for included ramdisk files
 chmod -R 750 $ramdisk/*;
+chmod -R 755 $ramdisk/sbin;
 chown -R root:root $ramdisk/*;
 
 
@@ -41,12 +42,11 @@ dump_boot;
 # init.rc
 backup_file init.rc;
 replace_string init.rc "cpuctl cpu,timer_slack" "mount cgroup none /dev/cpuctl cpu" "mount cgroup none /dev/cpuctl cpu,timer_slack";
-append_file init.rc "run-parts" init;
 
 # init.tuna.rc
 backup_file init.tuna.rc;
 insert_line init.tuna.rc "nodiratime barrier=0" after "mount_all /fstab.tuna" "\tmount ext4 /dev/block/platform/omap/omap_hsmmc.0/by-name/userdata /data remount nosuid nodev noatime nodiratime barrier=0";
-append_file init.tuna.rc "dvbootscript" init.tuna;
+append_file init.tuna.rc "bootscript" init.tuna;
 
 # fstab.tuna
 backup_file fstab.tuna;
